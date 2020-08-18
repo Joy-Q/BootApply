@@ -1,0 +1,81 @@
+    private void bindViewById(boolean onlyOneDevice) {
+        LogUtil.d(TAG, "bindViewById");
+        mDeviceView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                LogUtil.d(TAG, "onGlobalLayout");
+                //多个title滑动中则不展示，或者不是下标不为1则不展示
+                if ((!onlyOneDevice && mPagerState != 0) || mTitlePosition != mTickidsIndex) {
+                    LogUtil.d(TAG, "mPagerState != 0");
+                    LogUtil.d(TAG, "mTitlePosition：" + mTitlePosition);
+                    return;
+                }
+                View viewOne = getActivity().getWindow().getDecorView().findViewById(com.mobvoi.tickids.R.id.cl_title_fragment);
+                View viewTwo = getActivity().getWindow().getDecorView().findViewById(com.mobvoi.tickids.R.id.panel_bg);
+                View viewTwoTwo = getActivity().getWindow().getDecorView().findViewById(com.mobvoi.tickids.R.id.card_panel_center);
+                View viewThree = getActivity().getWindow().getDecorView().findViewById(com.mobvoi.tickids.R.id.fl_location);
+                View viewFour = getActivity().getWindow().getDecorView().findViewById(com.mobvoi.tickids.R.id.location_layout);
+                if (viewFour == null) {
+                    LogUtil.d(TAG, "viewFour是空了");
+                    return;
+                }
+                List<Guide.ViewParams> views = new ArrayList<>();
+                Guide.ViewParams rParams = new Guide.ViewParams(viewOne);
+                rParams.xRadiu = 10;
+                rParams.yRadiu = 10;
+                rParams.guideRes = com.mobvoi.tickids.R.drawable.tickids_boot_setting;
+                views.add(rParams);
+
+                //需要引导的控件参数
+                Guide.ViewParams bParams = new Guide.ViewParams(viewTwo);
+                //挖洞的类型
+                //引导图的X偏移
+                //引导图的Y偏移
+                bParams.xRadiu = 75;
+                bParams.yRadiu = 75;
+                //引导图资源文件
+                bParams.guideRes = com.mobvoi.tickids.R.drawable.tickids_boot_more_function;
+                views.add(bParams);
+
+                //需要引导的控件参数
+                Guide.ViewParams cParams = new Guide.ViewParams(viewTwoTwo);
+                //挖洞的类型
+                cParams.state = Guide.State.CIRCLE;
+                //引导图资源文件
+                cParams.guideRes = com.mobvoi.tickids.R.drawable.tickids_boot_more_function;
+                views.add(cParams);
+
+                //需要引导的控件参数
+                Guide.ViewParams cParamsThree = new Guide.ViewParams(viewThree);
+                //挖洞的类型
+                //引导图的X偏移
+                //引导图的Y偏移
+                cParamsThree.xRadiu = 15;
+                cParamsThree.yRadiu = 15;
+                //引导图资源文件
+                cParamsThree.guideRes = com.mobvoi.tickids.R.drawable.tickids_boot_location;
+                views.add(cParamsThree);
+
+                //需要引导的控件参数
+                Guide.ViewParams cParamsFour = new Guide.ViewParams(viewFour);
+                //挖洞的类型
+                //引导图的X偏移
+                //引导图的Y偏移
+                cParamsFour.xRadiu = 15;
+                cParamsFour.yRadiu = 15;
+                //引导图资源文件
+                cParamsFour.guideRes = com.mobvoi.tickids.R.drawable.tickids_boot_up_refresh_more;
+                views.add(cParamsFour);
+
+                new Guide.Builder(getActivity())
+                        .backgroundColor(0xA6000000)     // 设置引导层背景色
+                        .oneByOne(true)                  // 设置是否一个接一个显示引导
+                        .outsideTouchable(true)         // 设置除targetView（需要挖洞的控件）外是否可以点击
+                        .guideViews(views)// 设置多个引导
+                        .build()
+                        .show();
+                LogUtil.d(TAG, "removeOnGlobalLayoutListener");
+                mDeviceView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        });
+    }
